@@ -1,0 +1,2 @@
+// Shared type re-exports and future utility functions will live here
+export type { MessageSender, RiskLevel, MoodType, ApiResponse, ApiError, HealthResponse, User, Conversation, Message, Mood } from './types';

@@ -1,0 +1,11 @@
+{
+  "name": "@ai-esa/shared",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Shared TypeScript types and utilities",
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

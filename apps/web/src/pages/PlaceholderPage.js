@@ -1,0 +1,5 @@
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+export default function PlaceholderPage({ title, description, icon }) {
+    return (_jsxs("div", { className: "space-y-6", children: [_jsxs("div", { className: "space-y-1", children: [_jsxs("h1", { className: "text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2.5", children: [_jsx("span", { children: icon }), _jsx("span", { children: title })] }), _jsx("p", { className: "text-slate-600 text-sm", children: description })] }), _jsxs("div", { className: "bg-white rounded-xl border border-slate-200 p-12 text-center space-y-3 shadow-xs", children: [_jsx("div", { className: "text-3xl text-slate-400", children: icon }), _jsxs("h2", { className: "text-base font-medium text-slate-800", children: [title, " module"] }), _jsx("p", { className: "text-xs text-slate-500 max-w-sm mx-auto leading-relaxed", children: "This area is ready for feature integration. Authentication and session persistence are active." })] })] }));
+}
+//# sourceMappingURL=PlaceholderPage.js.map
