@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import loginBg from '../assets/login-bg.avif';
+import { authApi } from '../services/api';
+import loginBg from '../assets/login-bg.png';
 import logoImg from '../assets/logo.png';
 
 export default function Login() {
@@ -14,6 +15,9 @@ export default function Login() {
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isUnverified, setIsUnverified] = useState(false);
+  const [resendStatus, setResendStatus] = useState<'idle' | 'sending' | 'sent'>('idle');
+  const [resendMsg, setResendMsg] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const from = (location.state as { from?: { pathname: string } })?.from?.pathname || '/dashboard';
@@ -21,6 +25,8 @@ export default function Login() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setIsUnverified(false);
+    setResendMsg('');
 
     if (!email.trim() || !password) {
       setError('Please fill in all fields');
@@ -32,10 +38,26 @@ export default function Login() {
       await login({ email: email.trim(), password });
       navigate(from, { replace: true });
     } catch (err: unknown) {
-      const e = err as { message?: string };
+      const e = err as { message?: string; emailNotVerified?: boolean };
       setError(e.message ?? 'Failed to log in. Please check your credentials.');
+      if (e.emailNotVerified) {
+        setIsUnverified(true);
+      }
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleResendVerification = async () => {
+    if (!email.trim()) return;
+    setResendStatus('sending');
+    try {
+      const res = await authApi.resendVerification({ email: email.trim() });
+      setResendStatus('sent');
+      setResendMsg(res.message || 'Verification email resent! Please check your inbox.');
+    } catch (err: any) {
+      setResendStatus('idle');
+      setResendMsg(err.message || 'Failed to resend email.');
     }
   };
 
@@ -115,10 +137,36 @@ export default function Login() {
             {error && (
               <div
                 role="alert"
-                className="p-3.5 mb-5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm flex items-start gap-2.5"
+                className={`p-4 mb-5 rounded-2xl border text-sm space-y-2 ${
+                  isUnverified
+                    ? 'bg-amber-50 border-amber-200 text-amber-900'
+                    : 'bg-red-50 border-red-200 text-red-700'
+                }`}
               >
-                <span className="text-base leading-none select-none pt-0.5" aria-hidden="true">⚠️</span>
-                <span className="flex-1 font-medium">{error}</span>
+                <div className="flex items-start gap-2.5">
+                  <span className="text-base leading-none select-none pt-0.5" aria-hidden="true">
+                    {isUnverified ? '✉' : '⚠️'}
+                  </span>
+                  <span className="flex-1 font-medium leading-relaxed">{error}</span>
+                </div>
+                {isUnverified && (
+                  <div className="pt-2 border-t border-amber-200/70 flex items-center justify-between gap-3">
+                    <span className="text-xs text-amber-800">Didn't receive the email?</span>
+                    <button
+                      type="button"
+                      onClick={handleResendVerification}
+                      disabled={resendStatus === 'sending'}
+                      className="text-xs font-bold text-blue-700 hover:text-blue-800 underline cursor-pointer disabled:opacity-50"
+                    >
+                      {resendStatus === 'sending' ? 'Sending...' : 'Resend verification link'}
+                    </button>
+                  </div>
+                )}
+                {resendMsg && (
+                  <p className="text-xs text-emerald-800 font-semibold bg-emerald-50/80 border border-emerald-200 p-2 rounded-lg mt-1">
+                    {resendMsg}
+                  </p>
+                )}
               </div>
             )}
 
@@ -227,12 +275,9 @@ export default function Login() {
                 </label>
 
                 <Link
-                  to="/forgot-password"
-                  className="text-blue-600 hover:text-blue-700 font-semibold underline underline-offset-2 transition-colors"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    alert('Password reset link feature is simulated. Please sign in with your credentials.');
-                  }}
+                  to="/reset-password"
+                  id="link-forgot-password"
+                  className="text-blue-600 hover:text-blue-700 font-semibold underline underline-offset-2 transition-colors text-xs sm:text-sm"
                 >
                   Forgot password?
                 </Link>

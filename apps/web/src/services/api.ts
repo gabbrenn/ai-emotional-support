@@ -30,17 +30,26 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
 
   if (!response.ok) {
     let errorMessage = `Request failed (${response.status})`;
+    let errorData: any = {};
     try {
-      const errorJson = await response.json();
-      if (errorJson.error) {
-        errorMessage = errorJson.error;
+      errorData = await response.json();
+      if (errorData.error) {
+        errorMessage = errorData.error;
       }
     } catch {
       // Use status text if JSON parse fails
       errorMessage = response.statusText || errorMessage;
     }
-    const err = new Error(errorMessage) as Error & { statusCode: number };
+    const err = new Error(errorMessage) as Error & {
+      statusCode: number;
+      emailNotVerified?: boolean;
+      email?: string;
+    };
     err.statusCode = response.status;
+    if (errorData.emailNotVerified) {
+      err.emailNotVerified = true;
+      err.email = errorData.email;
+    }
     throw err;
   }
 
@@ -108,6 +117,18 @@ export const authApi = {
 
   changePassword: (payload: ChangePasswordInput): Promise<ChangePasswordResponse> =>
     api.patch<ChangePasswordResponse>('/api/auth/password', payload),
+
+  verifyEmail: (payload: { token: string }): Promise<{ message: string }> =>
+    api.post<{ message: string }>('/api/auth/verify-email', payload),
+
+  resendVerification: (payload: { email: string }): Promise<{ message: string }> =>
+    api.post<{ message: string }>('/api/auth/resend-verification', payload),
+
+  forgotPassword: (payload: { email: string }): Promise<{ message: string }> =>
+    api.post<{ message: string }>('/api/auth/forgot-password', payload),
+
+  resetPassword: (payload: { token: string; password: string }): Promise<{ message: string }> =>
+    api.post<{ message: string }>('/api/auth/reset-password', payload),
 };
 
 // ─── Chat / Conversation Types ────────────────────────────────────────────────

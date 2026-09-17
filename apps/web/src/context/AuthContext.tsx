@@ -8,7 +8,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (payload: LoginPayload) => Promise<void>;
-  register: (payload: RegisterPayload) => Promise<void>;
+  register: (payload: RegisterPayload) => Promise<{ user?: SafeUser; message?: string }>;
   logout: () => void;
   updateUser: (user: SafeUser) => void;
 }
@@ -59,9 +59,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const register = async (payload: RegisterPayload) => {
     const response = await authApi.register(payload);
-    tokenStorage.set(response.token);
-    setToken(response.token);
-    setUser(response.user);
+    if (response.token) {
+      tokenStorage.set(response.token);
+      setToken(response.token);
+      setUser(response.user);
+    }
+    return response as { user?: SafeUser; message?: string };
   };
 
   const updateUser = useCallback((updatedUser: SafeUser) => {

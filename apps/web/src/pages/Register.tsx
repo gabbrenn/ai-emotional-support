@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import loginBg from '../assets/login-bg.avif';
+import { authApi } from '../services/api';
+import loginBg from '../assets/login-bg.png';
 import logoImg from '../assets/logo.png';
 
 export default function Register() {
@@ -15,6 +16,9 @@ export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isRegistered, setIsRegistered] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
+  const [resendSuccess, setResendSuccess] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,12 +47,25 @@ export default function Register() {
     setIsLoading(true);
     try {
       await register({ name: name.trim(), email: email.trim(), password });
-      navigate('/dashboard', { replace: true });
+      setIsRegistered(true);
     } catch (err: unknown) {
       const e = err as { message?: string };
       setError(e.message ?? 'Registration failed. Please try again.');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleResend = async () => {
+    setResendLoading(true);
+    setResendSuccess(null);
+    try {
+      const res = await authApi.resendVerification({ email: email.trim() });
+      setResendSuccess(res.message || 'Verification link resent to your email!');
+    } catch (err: any) {
+      setError(err.message || 'Failed to resend verification email.');
+    } finally {
+      setResendLoading(false);
     }
   };
 
@@ -110,26 +127,75 @@ export default function Register() {
               </div>
             </div>
 
-            <div className="space-y-1.5 mb-5">
-              <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
-                Create an account
-              </h2>
-              <p className="text-sm text-slate-500">
-                Join MindCare AI and begin your personal journey today.
-              </p>
-            </div>
+            {isRegistered ? (
+              <div className="text-center py-4 space-y-5">
+                <div className="w-16 h-16 bg-blue-50 border border-blue-100 text-blue-600 rounded-2xl flex items-center justify-center mx-auto shadow-xs">
+                  <span className="text-2xl">✉</span>
+                </div>
+                <div className="space-y-2">
+                  <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
+                    Verify your email
+                  </h2>
+                  <p className="text-sm text-slate-600 leading-relaxed">
+                    We've sent a verification link to <strong className="text-slate-900">{email}</strong>.
+                  </p>
+                  <p className="text-xs text-slate-500 leading-relaxed bg-slate-50 p-3.5 rounded-xl border border-slate-100 text-left">
+                    Before logging in, please check your inbox and click the link to activate your account. If you don't see it, check your spam or promotions folder.
+                  </p>
+                </div>
 
-            {error && (
-              <div
-                role="alert"
-                className="p-3.5 mb-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm flex items-start gap-2.5"
-              >
-                <span className="text-base leading-none select-none pt-0.5" aria-hidden="true">⚠️</span>
-                <span className="flex-1 font-medium">{error}</span>
+                {resendSuccess && (
+                  <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-medium rounded-xl text-left">
+                    {resendSuccess}
+                  </div>
+                )}
+                {error && (
+                  <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-xs font-medium rounded-xl text-left">
+                    {error}
+                  </div>
+                )}
+
+                <div className="pt-2 space-y-2.5">
+                  <button
+                    type="button"
+                    onClick={() => navigate('/login')}
+                    className="w-full py-3.5 px-4 rounded-xl bg-[#1e3a5f] hover:bg-[#152e4d] text-white font-semibold text-sm transition-all shadow-md shadow-slate-900/10 cursor-pointer"
+                  >
+                    Go to Login &rarr;
+                  </button>
+
+                  <button
+                    type="button"
+                    disabled={resendLoading}
+                    onClick={handleResend}
+                    className="w-full py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium text-xs transition cursor-pointer disabled:opacity-50"
+                  >
+                    {resendLoading ? 'Sending link...' : 'Resend verification email'}
+                  </button>
+                </div>
               </div>
-            )}
+            ) : (
+              <>
+                <div className="space-y-1.5 mb-5">
+                  <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
+                    Create an account
+                  </h2>
+                  <p className="text-sm text-slate-500">
+                    Join MindCare AI and begin your personal journey today.
+                  </p>
+                </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+                {error && (
+                  <div
+                    role="alert"
+                    className="p-3.5 mb-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm flex items-start gap-2.5"
+                  >
+                    <span className="text-base leading-none select-none pt-0.5" aria-hidden="true">⚠️</span>
+                    <span className="flex-1 font-medium">{error}</span>
+                  </div>
+                )}
+
+                <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label htmlFor="name" className="block text-sm font-semibold text-slate-800 mb-1">
                   Full name
@@ -269,22 +335,24 @@ export default function Register() {
                 </div>
               </div>
 
-              <button
-                type="submit"
-                id="btn-register-submit"
-                disabled={isLoading}
-                className="w-full mt-2 py-3 px-4 rounded-xl bg-[#1e3a5f] hover:bg-[#152e4d] active:bg-[#0f2238] disabled:bg-slate-400 text-white font-semibold text-base transition-all duration-200 shadow-md shadow-slate-900/10 flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[#1e3a5f] focus:ring-offset-2"
-              >
-                {isLoading ? (
-                  <>
-                    <span className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                    <span>Creating account...</span>
-                  </>
-                ) : (
-                  'Create account'
-                )}
-              </button>
-            </form>
+                <button
+                  type="submit"
+                  id="btn-register-submit"
+                  disabled={isLoading}
+                  className="w-full mt-2 py-3 px-4 rounded-xl bg-[#1e3a5f] hover:bg-[#152e4d] active:bg-[#0f2238] disabled:bg-slate-400 text-white font-semibold text-base transition-all duration-200 shadow-md shadow-slate-900/10 flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[#1e3a5f] focus:ring-offset-2"
+                >
+                  {isLoading ? (
+                    <>
+                      <span className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                      <span>Creating account...</span>
+                    </>
+                  ) : (
+                    'Create account'
+                  )}
+                </button>
+                </form>
+              </>
+            )}
 
             <div className="mt-5 pt-4 border-t border-slate-100 text-center">
               <p className="text-xs text-slate-400 leading-relaxed">

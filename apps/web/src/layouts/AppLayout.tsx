@@ -261,6 +261,42 @@ export default function AppLayout() {
           <Outlet />
         </main>
       </div>
+
+      {/* ── Animated Floating Chat Button (Bottom-right on dashboard and other post-login pages) ── */}
+      {!isChatRoute && (
+        <div className="fixed bottom-6 right-6 z-50 group">
+          <button
+            type="button"
+            id="floating-chat-button"
+            onClick={() => navigate('/chat')}
+            aria-label="Direct to chat page"
+            className="relative flex items-center gap-3 bg-[#0b2138] hover:bg-[#133355] text-white p-2.5 sm:px-4 sm:py-3 rounded-full shadow-2xl shadow-slate-900/30 border border-slate-700/60 hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer group"
+          >
+            {/* Pulsing glow ring */}
+            <span className="absolute -inset-0.5 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 opacity-60 blur-xs group-hover:opacity-100 transition duration-300 -z-10 animate-pulse" />
+
+            {/* System Logo */}
+            <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white p-0.5 shrink-0 flex items-center justify-center shadow-inner overflow-hidden">
+              <img
+                src={logoImg}
+                alt="MindCare AI"
+                className="w-full h-full object-contain rounded-full transform group-hover:rotate-12 transition-transform duration-300"
+              />
+            </div>
+
+            {/* Label (visible on tablet/desktop) */}
+            <span className="hidden sm:inline text-sm font-semibold tracking-wide pr-1">
+              Chat with AI
+            </span>
+
+            {/* Online notification beacon */}
+            <span className="absolute -top-1 -right-1 flex h-4 w-4">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-4 w-4 bg-emerald-500 border-2 border-[#0b2138]" />
+            </span>
+          </button>
+        </div>
+      )}
     </div>
   );
 }
