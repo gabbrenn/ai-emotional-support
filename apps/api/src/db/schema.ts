@@ -7,6 +7,11 @@ export const users = sqliteTable('users', {
   name: text('name').notNull(),
   email: text('email').notNull().unique(),
   passwordHash: text('password_hash').notNull(),
+  isVerified: integer('is_verified', { mode: 'boolean' }).notNull().default(false),
+  verificationToken: text('verification_token'),
+  verificationTokenExpiresAt: text('verification_token_expires_at'),
+  resetPasswordToken: text('reset_password_token'),
+  resetPasswordTokenExpiresAt: text('reset_password_token_expires_at'),
   createdAt: text('created_at')
     .notNull()
     .default(sql`(datetime('now'))`),

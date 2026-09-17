@@ -1,4 +1,4 @@
-import type { AuthResponse, MeResponse } from '@ai-esa/shared';
+import type { AuthResponse, MeResponse, UpdateProfileInput, ChangePasswordInput, ChangePasswordResponse } from '@ai-esa/shared';
 
 const BASE_URL = import.meta.env.VITE_API_URL ?? '';
 const TOKEN_KEY = 'mindcare_auth_token';
@@ -65,6 +65,13 @@ export const api = {
       body: JSON.stringify(body),
     }),
 
+  patch: <T>(path: string, body: unknown, options?: RequestInit) =>
+    request<T>(path, {
+      ...options,
+      method: 'PATCH',
+      body: JSON.stringify(body),
+    }),
+
   delete: <T>(path: string, options?: RequestInit) =>
     request<T>(path, { ...options, method: 'DELETE' }),
 };
@@ -95,6 +102,12 @@ export const authApi = {
 
   getMe: (): Promise<MeResponse> =>
     api.get<MeResponse>('/api/auth/me'),
+
+  updateProfile: (payload: UpdateProfileInput): Promise<MeResponse> =>
+    api.patch<MeResponse>('/api/auth/me', payload),
+
+  changePassword: (payload: ChangePasswordInput): Promise<ChangePasswordResponse> =>
+    api.patch<ChangePasswordResponse>('/api/auth/password', payload),
 };
 
 // ─── Chat / Conversation Types ────────────────────────────────────────────────

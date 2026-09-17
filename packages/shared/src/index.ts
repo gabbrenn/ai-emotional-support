@@ -39,6 +39,19 @@ export interface MeResponse {
   user: SafeUser;
 }
 
+export interface UpdateProfileInput {
+  name: string;
+}
+
+export interface ChangePasswordInput {
+  currentPassword: string;
+  newPassword: string;
+}
+
+export interface ChangePasswordResponse {
+  message: string;
+}
+
 // ─── Database Entities ────────────────────────────────────────────────────────
 export interface User {
   id: number;

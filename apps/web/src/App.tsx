@@ -7,7 +7,8 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Chat from './pages/Chat';
 import Mood from './pages/Mood';
-import PlaceholderPage from './pages/PlaceholderPage';
+import Profile from './pages/Profile';
+import Resources from './pages/Resources';
 import StatusPage from './pages/StatusPage';
 
 export default function App() {
@@ -30,26 +31,8 @@ export default function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="/mood" element={<Mood />} />
-          <Route
-            path="/resources"
-            element={
-              <PlaceholderPage
-                title="Wellness Resources"
-                description="Grounding exercises, coping strategies, and mental health helplines"
-                icon="🌱"
-              />
-            }
-          />
-          <Route
-            path="/profile"
-            element={
-              <PlaceholderPage
-                title="Account & Profile"
-                description="Manage your account settings and preferences"
-                icon="⚙️"
-              />
-            }
-          />
+          <Route path="/resources" element={<Resources />} />
+          <Route path="/profile" element={<Profile />} />
         </Route>
 
         {/* Default route: redirect to /dashboard (which redirects to /login if unauth) */}
