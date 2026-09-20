@@ -21,11 +21,15 @@ export interface HealthResponse {
   timestamp: string;
 }
 
+export type UserRole = 'user' | 'admin';
+
 // ─── User (Safe info) ─────────────────────────────────────────────────────────
 export interface SafeUser {
   id: number;
   name: string;
   email: string;
+  role: UserRole;
+  isActive?: boolean;
   isVerified?: boolean;
   createdAt?: string;
   updatedAt?: string;
@@ -53,11 +57,46 @@ export interface ChangePasswordResponse {
   message: string;
 }
 
+// ─── Admin Dashboard Entities & APIs ──────────────────────────────────────────
+export interface AdminStats {
+  totalUsers: number;
+  totalConversations: number;
+  totalMoodCheckins: number;
+  newUsersToday: number;
+  newUsersThisWeek: number;
+  newUsersThisMonth: number;
+}
+
+export interface AdminUser {
+  id: number;
+  name: string;
+  email: string;
+  role: UserRole;
+  isActive: boolean;
+  isVerified?: boolean;
+  createdAt: string;
+  updatedAt?: string;
+}
+
+export interface AdminUsersResponse {
+  users: AdminUser[];
+}
+
+export interface AdminUpdateRoleInput {
+  role: UserRole;
+}
+
+export interface AdminUpdateStatusInput {
+  isActive: boolean;
+}
+
 // ─── Database Entities ────────────────────────────────────────────────────────
 export interface User {
   id: number;
   name: string;
   email: string;
+  role: UserRole;
+  isActive: boolean;
   createdAt: string;
   updatedAt: string;
 }

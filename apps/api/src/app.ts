@@ -6,6 +6,7 @@ import healthRoutes from './routes/health.js';
 import authRoutes from './routes/auth.js';
 import conversationRoutes from './routes/conversations.js';
 import moodRoutes from './routes/moods.js';
+import adminRoutes from './routes/admin.js';
 
 export async function buildApp() {
   const app = Fastify({
@@ -42,6 +43,7 @@ export async function buildApp() {
   await app.register(authRoutes, { prefix: '/api/auth' });
   await app.register(conversationRoutes, { prefix: '/api/conversations' });
   await app.register(moodRoutes, { prefix: '/api/moods' });
+  await app.register(adminRoutes, { prefix: '/api/admin' });
 
   return app;
 }

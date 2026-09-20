@@ -8,4 +8,7 @@ export const config = {
   frontendUrl: process.env.FRONTEND_URL ?? 'http://localhost:5173',
   openRouterApiKey: process.env.OPENROUTER_API_KEY ?? '',
   openRouterModel: process.env.OPENROUTER_MODEL ?? 'openrouter/free',
+  adminName: process.env.ADMIN_NAME ?? 'MindCare Administrator',
+  adminEmail: process.env.ADMIN_EMAIL ?? 'admin@example.com',
+  adminPassword: process.env.ADMIN_PASSWORD ?? '',
 } as const;

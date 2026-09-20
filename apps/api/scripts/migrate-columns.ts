@@ -7,6 +7,8 @@ async function run() {
   console.log('Existing columns:', Array.from(existingCols));
 
   const additions = [
+    { name: 'role', sql: "ALTER TABLE users ADD COLUMN role TEXT NOT NULL DEFAULT 'user';" },
+    { name: 'is_active', sql: 'ALTER TABLE users ADD COLUMN is_active INTEGER NOT NULL DEFAULT 1;' },
     { name: 'is_verified', sql: 'ALTER TABLE users ADD COLUMN is_verified INTEGER NOT NULL DEFAULT 0;' },
     { name: 'verification_token', sql: 'ALTER TABLE users ADD COLUMN verification_token TEXT;' },
     { name: 'verification_token_expires_at', sql: 'ALTER TABLE users ADD COLUMN verification_token_expires_at TEXT;' },

@@ -12,6 +12,8 @@ import Mood from './pages/Mood';
 import Profile from './pages/Profile';
 import Resources from './pages/Resources';
 import StatusPage from './pages/StatusPage';
+import AdminDashboard from './pages/AdminDashboard';
+import AdminRoute from './components/AdminRoute';
 
 export default function App() {
   return (
@@ -38,6 +40,14 @@ export default function App() {
           <Route path="/mood" element={<Mood />} />
           <Route path="/resources" element={<Resources />} />
           <Route path="/profile" element={<Profile />} />
+          <Route
+            path="/admin"
+            element={
+              <AdminRoute>
+                <AdminDashboard />
+              </AdminRoute>
+            }
+          />
         </Route>
 
         {/* Default route: redirect to /dashboard (which redirects to /login if unauth) */}

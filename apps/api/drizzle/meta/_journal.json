@@ -15,6 +15,13 @@
       "when": 1789497777000,
       "tag": "0001_add_mood_score",
       "breakpoints": false
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1789887181580,
+      "tag": "0002_yielding_cloak",
+      "breakpoints": true
     }
   ]
 }

@@ -1,4 +1,14 @@
-import type { AuthResponse, MeResponse, UpdateProfileInput, ChangePasswordInput, ChangePasswordResponse } from '@ai-esa/shared';
+import type {
+  AuthResponse,
+  MeResponse,
+  UpdateProfileInput,
+  ChangePasswordInput,
+  ChangePasswordResponse,
+  AdminStats,
+  AdminUser,
+  AdminUsersResponse,
+  UserRole,
+} from '@ai-esa/shared';
 
 const BASE_URL = import.meta.env.VITE_API_URL ?? '';
 const TOKEN_KEY = 'mindcare_auth_token';
@@ -189,4 +199,23 @@ export const moodApi = {
   getTodayMood: (): Promise<{ mood: MoodEntry | null }> =>
     api.get('/api/moods/today'),
 };
+
+// ─── Admin API ────────────────────────────────────────────────────────────────
+
+export const adminApi = {
+  getStats: (): Promise<AdminStats> =>
+    api.get<AdminStats>('/api/admin/stats'),
+
+  getUsers: (search?: string): Promise<AdminUsersResponse> => {
+    const query = search ? `?search=${encodeURIComponent(search)}` : '';
+    return api.get<AdminUsersResponse>(`/api/admin/users${query}`);
+  },
+
+  updateRole: (id: number, role: UserRole): Promise<{ user: AdminUser }> =>
+    api.patch<{ user: AdminUser }>(`/api/admin/users/${id}/role`, { role }),
+
+  updateStatus: (id: number, isActive: boolean): Promise<{ user: AdminUser }> =>
+    api.patch<{ user: AdminUser }>(`/api/admin/users/${id}/status`, { isActive }),
+};
+
 

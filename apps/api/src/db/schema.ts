@@ -7,6 +7,8 @@ export const users = sqliteTable('users', {
   name: text('name').notNull(),
   email: text('email').notNull().unique(),
   passwordHash: text('password_hash').notNull(),
+  role: text('role', { enum: ['user', 'admin'] }).notNull().default('user'),
+  isActive: integer('is_active', { mode: 'boolean' }).notNull().default(true),
   isVerified: integer('is_verified', { mode: 'boolean' }).notNull().default(false),
   verificationToken: text('verification_token'),
   verificationTokenExpiresAt: text('verification_token_expires_at'),

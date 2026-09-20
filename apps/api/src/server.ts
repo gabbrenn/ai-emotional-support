@@ -1,7 +1,15 @@
 import { buildApp } from './app.js';
 import { config } from './config/index.js';
+import { bootstrapAdmin } from './services/admin-bootstrap.service.js';
 
 async function main() {
+  try {
+    await bootstrapAdmin();
+  } catch (err: any) {
+    console.error(`[admin-bootstrap] Fatal startup error: ${err?.message || err}`);
+    process.exit(1);
+  }
+
   const app = await buildApp();
 
   // Graceful shutdown

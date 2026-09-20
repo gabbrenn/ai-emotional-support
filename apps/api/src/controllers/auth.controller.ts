@@ -56,7 +56,7 @@ export class AuthController {
       const user = await authService.login(validatedInput);
 
       const token = request.server.jwt.sign(
-        { id: user.id, email: user.email, name: user.name },
+        { id: user.id, email: user.email, name: user.name, role: user.role },
         { expiresIn: '7d' },
       );
 

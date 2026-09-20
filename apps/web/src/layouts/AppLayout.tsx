@@ -146,6 +146,30 @@ export default function AppLayout() {
               <span>{item.label}</span>
             </NavLink>
           ))}
+
+          {user?.role === 'admin' && (
+            <div className="pt-3 mt-3 border-t border-white/10">
+              <p className="px-4 mb-2 text-[11px] font-semibold tracking-wider text-slate-400 uppercase">
+                Administration
+              </p>
+              <NavLink
+                to="/admin"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={({ isActive }) =>
+                  `flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
+                    isActive
+                      ? 'bg-[#1a3d60] text-white shadow-xs font-semibold'
+                      : 'text-slate-300 hover:text-white hover:bg-white/5'
+                  }`
+                }
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+                <span>Admin Dashboard</span>
+              </NavLink>
+            </div>
+          )}
         </nav>
 
         <div className="pt-4 border-t border-white/10 mt-auto">
@@ -172,7 +196,7 @@ export default function AppLayout() {
           <span className="text-xl font-bold tracking-tight text-white">MindCare AI</span>
         </div>
 
-        <nav className="space-y-1.5 flex-1">
+        <nav className="space-y-1.5 flex-1 overflow-y-auto">
           {navItems.map((item) => (
             <NavLink
               key={item.path}
@@ -189,6 +213,29 @@ export default function AppLayout() {
               <span>{item.label}</span>
             </NavLink>
           ))}
+
+          {user?.role === 'admin' && (
+            <div className="pt-3 mt-3 border-t border-white/10">
+              <p className="px-4 mb-2 text-[11px] font-semibold tracking-wider text-slate-400 uppercase">
+                Administration
+              </p>
+              <NavLink
+                to="/admin"
+                className={({ isActive }) =>
+                  `flex items-center gap-3.5 px-4 py-2.5 rounded-xl text-sm transition-all duration-150 ${
+                    isActive
+                      ? 'bg-[#183d63] text-white font-semibold shadow-sm'
+                      : 'text-slate-300 hover:text-white hover:bg-white/5 font-medium'
+                  }`
+                }
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+                <span>Admin Dashboard</span>
+              </NavLink>
+            </div>
+          )}
         </nav>
 
         {showEncouragement && (

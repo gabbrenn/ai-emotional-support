@@ -49,6 +49,8 @@ export class AuthService {
         name: input.name.trim(),
         email: normalizedEmail,
         passwordHash,
+        role: 'user',
+        isActive: true,
         isVerified: false,
         verificationToken,
         verificationTokenExpiresAt,
@@ -57,6 +59,8 @@ export class AuthService {
         id: users.id,
         name: users.name,
         email: users.email,
+        role: users.role,
+        isActive: users.isActive,
         isVerified: users.isVerified,
         createdAt: users.createdAt,
         updatedAt: users.updatedAt,
@@ -265,6 +269,13 @@ export class AuthService {
       throw err;
     }
 
+    // Check if account is active
+    if (!user.isActive) {
+      const err = new Error('Your account has been deactivated. Please contact support.') as Error & { statusCode: number };
+      err.statusCode = 403;
+      throw err;
+    }
+
     // Require email verification before allowing login
     if (!user.isVerified) {
       const err = new Error('Please verify your email address before logging in. A verification link was sent to your email.') as Error & { statusCode: number; emailNotVerified?: boolean; email?: string };
@@ -278,6 +289,8 @@ export class AuthService {
       id: user.id,
       name: user.name,
       email: user.email,
+      role: user.role,
+      isActive: user.isActive,
       isVerified: user.isVerified,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
@@ -293,6 +306,8 @@ export class AuthService {
         id: users.id,
         name: users.name,
         email: users.email,
+        role: users.role,
+        isActive: users.isActive,
         createdAt: users.createdAt,
         updatedAt: users.updatedAt,
       })
@@ -318,6 +333,8 @@ export class AuthService {
         id: users.id,
         name: users.name,
         email: users.email,
+        role: users.role,
+        isActive: users.isActive,
         createdAt: users.createdAt,
         updatedAt: users.updatedAt,
       });
